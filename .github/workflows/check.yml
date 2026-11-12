@@ -1,0 +1,22 @@
+name: Check
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Validate data and build
+        run: npm run build
+      - name: Quote check (informational)
+        run: node scripts/verify-quotes.mjs --out verify-report.md && cat verify-report.md >> "$GITHUB_STEP_SUMMARY"

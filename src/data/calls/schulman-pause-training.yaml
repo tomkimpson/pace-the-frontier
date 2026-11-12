@@ -1,0 +1,14 @@
+person: John Schulman
+role: Co-founder, OpenAI
+sector: industry
+country: US
+date: 2024-05-15
+quote: "Pause either further training, or pause deployment, or avoiding certain types of training that we think might be riskier."
+notes: Date approximate (believed to be a 2024 podcast); quote taken from PauseAI's compilation. Find the original and correct.
+source_url: https://pauseai.info/quotes
+source_type: podcast
+primary_source: false
+stance: pause
+conditional: true
+added: 2026-11-12
+verified: false

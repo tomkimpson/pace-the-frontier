@@ -1,0 +1,712 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/global.css';
+
+const calls = (await getCollection('calls'))
+  .map((c) => ({ id: c.id, ...c.data }))
+  .sort((a, b) => b.date.getTime() - a.date.getTime());
+const letters = (await getCollection('letters'))
+  .map((l) => ({ id: l.id, ...l.data }))
+  .sort((a, b) => b.signatories - a.signatories);
+
+const totalSignatories = letters.reduce((s, l) => s + l.signatories, 0);
+const fmt = (n: number) => n.toLocaleString('en-US');
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+const STANCE_LABEL: Record<string, string> = {
+  pause: 'Pause',
+  prohibit: 'Prohibit',
+  moratorium: 'Moratorium',
+  slow: 'Slow down',
+};
+const SECTOR_LABEL: Record<string, string> = {
+  industry: 'Industry',
+  academia: 'Academia',
+  government: 'Government',
+  'civil-society': 'Civil society',
+  faith: 'Faith',
+  arts: 'Arts',
+  media: 'Media',
+};
+
+const stancesPresent = Object.keys(STANCE_LABEL).filter((s) => calls.some((c) => c.stance === s));
+const sectorsPresent = Object.keys(SECTOR_LABEL).filter((s) => calls.some((c) => c.sector === s));
+
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter((w) => /^[A-Z]/.test(w))
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('');
+
+const sizeClass = (q: string) => (q.length < 40 ? 'xl' : q.length < 90 ? 'lg' : 'md');
+
+// Timeline: calls + letters per half-year since 2023
+const startYear = 2023;
+const now = new Date();
+const buckets: { label: string; calls: number; letters: number }[] = [];
+for (let y = startYear; y <= now.getUTCFullYear(); y++) {
+  for (const h of [0, 1]) {
+    if (y === now.getUTCFullYear() && h === 1 && now.getUTCMonth() < 6) break;
+    buckets.push({ label: `${h ? 'H2' : 'H1'} ${y}`, calls: 0, letters: 0 });
+  }
+}
+const bucketOf = (d: Date) => (d.getUTCFullYear() - startYear) * 2 + (d.getUTCMonth() < 6 ? 0 : 1);
+for (const c of calls) {
+  const i = bucketOf(c.date);
+  if (buckets[i]) buckets[i].calls++;
+}
+for (const l of letters) {
+  const i = bucketOf(l.date);
+  if (buckets[i]) buckets[i].letters++;
+}
+const maxBucket = Math.max(1, ...buckets.map((b) => b.calls + b.letters));
+const latest = calls[0];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pace the Frontier</title>
+    <meta
+      name="description"
+      content="A running record of public calls to pause, slow or prohibit frontier AI development."
+    />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap">
+        <p class="eyebrow">A running record · updated weekly</p>
+        <h1>
+          They are asking us<br /><em>to slow down.</em>
+        </h1>
+        <p class="lede">
+          Researchers, executives, lawmakers and the public are calling to pause, pace or prohibit
+          the race to ever more powerful AI. This is every call we can verify, in their own words.
+        </p>
+
+        <dl class="stats">
+          <div>
+            <dt>Signatures on open letters</dt>
+            <dd class="big" data-count={totalSignatories}>{fmt(totalSignatories)}</dd>
+          </div>
+          <div>
+            <dt>Named voices on record</dt>
+            <dd class="big" data-count={calls.length}>{calls.length}</dd>
+          </div>
+          <div>
+            <dt>Latest</dt>
+            <dd class="latest">
+              {latest.person}, <span>{fmtDate(latest.date)}</span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </header>
+
+    <section class="timeline wrap" aria-labelledby="tl-h">
+      <h2 id="tl-h" class="eyebrow">Calls over time</h2>
+      <div class="bars" role="list">
+        {
+          buckets.map((b) => (
+            <div class="bar" role="listitem" title={`${b.label}: ${b.calls} voices, ${b.letters} letters`}>
+              <div class="stack" style={`--h:${((b.calls + b.letters) / maxBucket) * 100}%`}>
+                <span class="seg letters" style={`flex:${b.letters}`} />
+                <span class="seg calls" style={`flex:${b.calls}`} />
+              </div>
+              <span class="lbl">{b.label}</span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="legend">
+        <span class="key calls"></span> Named voices <span class="key letters"></span> Open letters
+      </p>
+    </section>
+
+    <section class="letters-sec wrap" aria-labelledby="letters-h">
+      <h2 id="letters-h" class="section-h">Open letters</h2>
+      <div class="letter-grid">
+        {
+          letters.map((l) => (
+            <article class="letter reveal">
+              <p class="eyebrow">
+                {l.organiser} · {fmtDate(l.date)}
+              </p>
+              <h3>{l.title}</h3>
+              <blockquote>“{l.ask}”</blockquote>
+              <p class="sig">
+                <strong>{fmt(l.signatories)}</strong> signatories
+                {l.notable.length > 0 && <span> including {l.notable.slice(0, 4).join(', ')}</span>}
+              </p>
+              <a class="src" href={l.url} target="_blank" rel="noopener">
+                Read and sign ↗
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="voices wrap" aria-labelledby="voices-h">
+      <div class="voices-head">
+        <h2 id="voices-h" class="section-h">In their own words</h2>
+        <p class="shown"><span id="shown-count">{calls.length}</span> of {calls.length} shown</p>
+      </div>
+
+      <div class="filters" role="group" aria-label="Filter calls">
+        <div class="chips" data-filter="stance">
+          <button class="chip on" data-value="all">All calls</button>
+          {stancesPresent.map((s) => <button class="chip" data-value={s}>{STANCE_LABEL[s]}</button>)}
+        </div>
+        <div class="chips" data-filter="sector">
+          <button class="chip on" data-value="all">All sectors</button>
+          {
+            sectorsPresent.map((s) => (
+              <button class="chip" data-value={s} style={`--sc:var(--s-${s})`}>
+                <i class="dot" />
+                {SECTOR_LABEL[s]}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="wall">
+        {
+          calls.map((c) => (
+            <article
+              class={`card reveal ${sizeClass(c.quote)}`}
+              data-stance={c.stance}
+              data-sector={c.sector}
+              style={`--sc:var(--s-${c.sector})`}
+            >
+              <blockquote>“{c.quote}”</blockquote>
+              {c.summary && <p class="summary">{c.summary}</p>}
+              <footer>
+                <span class="avatar" aria-hidden="true">
+                  {initials(c.person)}
+                </span>
+                <span class="who">
+                  <strong>{c.person}</strong>
+                  <span>{c.role}</span>
+                </span>
+              </footer>
+              <p class="meta">
+                <span class="tag">{STANCE_LABEL[c.stance]}</span>
+                {c.conditional && <span class="tag soft">Conditional</span>}
+                <a href={c.source_url} target="_blank" rel="noopener">
+                  {c.source_type} · {fmtDate(c.date)} ↗
+                </a>
+                {!c.verified && (
+                  <span class="unverified" title="Not yet checked against the original source">
+                    unverified
+                  </span>
+                )}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="method wrap" aria-labelledby="method-h">
+      <h2 id="method-h" class="section-h">How this list is made</h2>
+      <div class="method-grid">
+        <p>
+          <strong>Verbatim or nothing.</strong> Every entry is an exact quote with a date and a link to
+          where it was said. Context we add is never presented as a quote.
+        </p>
+        <p>
+          <strong>Tagged honestly.</strong> We mark how strong each call is, and flag conditional ones
+          (“I would pause if others did”) so you can judge for yourself.
+        </p>
+        <p>
+          <strong>Updated weekly.</strong> An AI agent searches for new calls each week and proposes
+          them. A person checks every quote against its source before it appears.
+        </p>
+        <p>
+          <strong>Open to correction.</strong> Spotted an error or a missing voice?
+          <a href="https://github.com/tomkimpson/pace-the-frontier/issues/new">Open an issue</a>.
+          Signature totals count signatures, not unique people, since letters overlap.
+        </p>
+      </div>
+    </section>
+
+    <footer class="site-foot wrap">
+      <p>Pace the Frontier · data is open on GitHub</p>
+    </footer>
+
+    <script>
+      // Filtering
+      const state: Record<string, string> = { stance: 'all', sector: 'all' };
+      const cards = Array.from(document.querySelectorAll<HTMLElement>('.card'));
+      const shown = document.getElementById('shown-count')!;
+      document.querySelectorAll<HTMLElement>('.chips').forEach((group) => {
+        const key = group.dataset.filter!;
+        group.addEventListener('click', (e) => {
+          const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.chip');
+          if (!btn) return;
+          group.querySelectorAll('.chip').forEach((b) => b.classList.toggle('on', b === btn));
+          state[key] = btn.dataset.value!;
+          let n = 0;
+          cards.forEach((c) => {
+            const ok =
+              (state.stance === 'all' || c.dataset.stance === state.stance) &&
+              (state.sector === 'all' || c.dataset.sector === state.sector);
+            c.hidden = !ok;
+            if (ok) n++;
+          });
+          shown.textContent = String(n);
+        });
+      });
+
+      // Reveal on scroll
+      const io = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((en) => {
+            if (en.isIntersecting) {
+              en.target.classList.add('in');
+              io.unobserve(en.target);
+            }
+          }),
+        { rootMargin: '0px 0px -8% 0px' },
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      // Count-up for headline numbers
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+          const target = Number(el.dataset.count);
+          const t0 = performance.now();
+          const dur = 1400;
+          const tick = (t: number) => {
+            const p = Math.min(1, (t - t0) / dur);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(target * eased).toLocaleString('en-US');
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .hero {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--rule);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 144;
+    font-size: clamp(44px, 9vw, 112px);
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    margin: 18px 0 24px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .lede {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.2vw, 22px);
+    line-height: 1.45;
+    color: var(--ink-2);
+    max-width: 640px;
+    margin: 0 0 48px;
+  }
+  .stats {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+    margin: 0;
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+  }
+  @media (min-width: 720px) {
+    .stats {
+      grid-template-columns: 1.4fr 1fr 1fr;
+    }
+  }
+  .stats dt {
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+  }
+  .stats dd {
+    margin: 6px 0 0;
+  }
+  .big {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .latest {
+    font-family: var(--serif);
+    font-size: 22px;
+  }
+  .latest span {
+    color: var(--ink-3);
+  }
+
+  .timeline {
+    padding-top: 40px;
+    padding-bottom: 8px;
+  }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 120px;
+    margin-top: 16px;
+  }
+  .bar {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    min-width: 0;
+  }
+  .stack {
+    height: var(--h);
+    min-height: 2px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 3px 3px 0 0;
+    overflow: hidden;
+    background: var(--rule);
+  }
+  .seg.calls {
+    background: var(--accent);
+  }
+  .seg.letters {
+    background: var(--ink-2);
+  }
+  .lbl {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-top: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    .lbl {
+      font-size: 0;
+    }
+    .bar:nth-child(odd) .lbl {
+      font-size: 9px;
+    }
+  }
+  .legend {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 12px;
+  }
+  .key {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin: 0 4px 0 12px;
+    vertical-align: -1px;
+  }
+  .key:first-child {
+    margin-left: 0;
+  }
+  .key.calls {
+    background: var(--accent);
+  }
+  .key.letters {
+    background: var(--ink-2);
+  }
+
+  .section-h {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(30px, 4vw, 44px);
+    letter-spacing: -0.015em;
+    margin: 0 0 24px;
+  }
+
+  .letters-sec {
+    padding-top: 56px;
+  }
+  .letter-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .letter-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .letter {
+    background: var(--paper-2);
+    border-radius: 6px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .letter h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 21px;
+    line-height: 1.2;
+    margin: 8px 0 12px;
+  }
+  .letter blockquote {
+    margin: 0 0 16px;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+  .sig {
+    margin: auto 0 12px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .sig strong {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--ink);
+    display: block;
+    font-variant-numeric: tabular-nums;
+  }
+  .src {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .voices {
+    padding-top: 72px;
+  }
+  .voices-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .shown {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-3);
+    margin: 0;
+  }
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    font: 500 13px var(--sans);
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .chip:hover {
+    border-color: var(--ink-3);
+  }
+  .chip.on {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .chip .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sc);
+  }
+
+  .wall {
+    columns: 1;
+    column-gap: 16px;
+  }
+  @media (min-width: 680px) {
+    .wall {
+      columns: 2;
+    }
+  }
+  @media (min-width: 1040px) {
+    .wall {
+      columns: 3;
+    }
+  }
+  .card {
+    break-inside: avoid;
+    margin: 0 0 16px;
+    padding: 24px 22px 18px;
+    border-top: 3px solid var(--sc);
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--rule);
+    border-radius: 0 0 6px 6px;
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .card blockquote {
+    margin: 0 0 18px;
+    font-family: var(--serif);
+    font-weight: 400;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+  }
+  .card.xl blockquote {
+    font-size: 34px;
+  }
+  .card.lg blockquote {
+    font-size: 25px;
+  }
+  .card.md blockquote {
+    font-size: 20px;
+    line-height: 1.32;
+  }
+  .summary {
+    font-size: 14px;
+    color: var(--ink-2);
+    margin: -6px 0 16px;
+  }
+  .card footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .avatar {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font: 600 14px var(--sans);
+    color: var(--paper);
+    background: var(--sc);
+    letter-spacing: 0.02em;
+  }
+  .who {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    min-width: 0;
+  }
+  .who strong {
+    font-weight: 600;
+  }
+  .who span {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin: 16px 0 0;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .meta a {
+    text-decoration: none;
+  }
+  .meta a:hover {
+    color: var(--ink);
+  }
+  .tag {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sc);
+    font-weight: 500;
+  }
+  .tag.soft {
+    color: var(--ink-3);
+  }
+  .unverified {
+    margin-left: auto;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    padding: 0 5px;
+  }
+
+  .method {
+    padding-top: 80px;
+  }
+  .method-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 800px) {
+    .method-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .method p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--ink-2);
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+  }
+  .method strong {
+    display: block;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 19px;
+    margin-bottom: 6px;
+  }
+  .site-foot {
+    padding-top: 64px;
+    padding-bottom: 48px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+</style>
