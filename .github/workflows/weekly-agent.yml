@@ -1,0 +1,65 @@
+name: Weekly agent
+
+on:
+  schedule:
+    # Mondays 21:37 UTC = Tuesday morning in Melbourne
+    - cron: '37 21 * * 1'
+  workflow_dispatch:
+    inputs:
+      lookback_days:
+        description: How many days back to search
+        default: '10'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Ask the agent for new calls
+        id: propose
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ vars.AGENT_MODEL || 'claude-sonnet-5-5' }}
+          LOOKBACK_DAYS: ${{ inputs.lookback_days || '10' }}
+        run: node scripts/propose.mjs
+
+      - name: Check quotes against sources
+        if: steps.propose.outputs.count != '0'
+        run: node scripts/verify-quotes.mjs --out verify-report.md
+
+      - name: Validate schema
+        if: steps.propose.outputs.count != '0'
+        run: npm run build
+
+      - name: Assemble PR body
+        if: steps.propose.outputs.count != '0'
+        run: |
+          {
+            cat agent-summary.md
+            echo
+            cat verify-report.md
+            echo
+            echo "**Before merging:** open each source, confirm the quote is verbatim, fix tags, and set \`verified: true\` and \`verified_by\` on entries you've checked."
+          } > pr-body.md
+          rm agent-summary.md verify-report.md
+
+      - name: Open pull request
+        if: steps.propose.outputs.count != '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: agent/weekly-${{ github.run_id }}
+          commit-message: 'Weekly agent: propose new calls'
+          title: 'Weekly agent: ${{ steps.propose.outputs.count }} proposed call(s)'
+          body-path: pr-body.md
+          add-paths: src/data/calls/*.yaml
+          labels: agent-proposal
