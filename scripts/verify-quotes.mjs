@@ -11,7 +11,7 @@ const out = outIdx >= 0 ? args[outIdx + 1] : null;
 const calls = (await loadCalls()).filter((c) => all || !c.verified);
 const rows = [];
 for (const c of calls) {
-  const r = await checkQuote(c.source_url, c.quote);
+  const r = await checkQuote(c.source_url, c.quote, c.archive_url);
   const icon = r.ok === true ? '✅' : r.ok === false ? '❌' : '⚠️';
   rows.push({ icon, c, r });
   console.log(`${icon} ${c.person} — ${r.reason}`);

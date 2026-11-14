@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -20,3 +22,13 @@ jobs:
         run: npm run build
       - name: Quote check (informational)
         run: node scripts/verify-quotes.mjs --out verify-report.md && cat verify-report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Relevance check on changed calls (informational)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ vars.AGENT_MODEL || 'claude-sonnet-5-5' }}
+        run: |
+          changed=$(git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- 'src/data/calls/*.yaml')
+          # TEMP baseline: judge everything
+          if [ -z "$ANTHROPIC_API_KEY" ]; then echo "No API key available (fork PR?); skipping." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          node scripts/check-relevance.mjs --out relevance-report.md --all  # TEMP: baseline on unfixed seed data
+          cat relevance-report.md >> "$GITHUB_STEP_SUMMARY"
