@@ -28,7 +28,7 @@ jobs:
           MODEL: ${{ vars.AGENT_MODEL || 'claude-sonnet-5-5' }}
         run: |
           changed=$(git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- 'src/data/calls/*.yaml')
-          # TEMP baseline: judge everything
+          if [ -z "$changed" ]; then echo "No call entries changed."; exit 0; fi
           if [ -z "$ANTHROPIC_API_KEY" ]; then echo "No API key available (fork PR?); skipping." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
-          node scripts/check-relevance.mjs --out relevance-report.md --all  # TEMP: baseline on unfixed seed data
+          node scripts/check-relevance.mjs --out relevance-report.md $changed
           cat relevance-report.md >> "$GITHUB_STEP_SUMMARY"

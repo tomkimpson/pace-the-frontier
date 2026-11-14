@@ -37,7 +37,7 @@ export const INCLUSION_RULES = `An entry qualifies only if ALL of these hold:
 
 These are NOT calls, even when the words "pause", "slow" or "stop" appear:
 - Asking that humanity keep the ABILITY to pause (an off-switch, a "pause button", the capacity to stop) without calling for a pause.
-- Hypothetical or descriptive statements: what labs might do in some scenario, what a pause would achieve, predictions that someone will slow down.
+- Hypothetical or descriptive statements: what labs might do in some scenario, or predictions that someone will slow down. Explaining what a pause would achieve counts only if the text shows the speaker arguing for one.
 - Resignation without endorsement: "it can't be slowed", "nobody can stop it". (If they also say they WANT it slowed, that part can count; mark it conditional only if they state a condition.)
 - Calls only for regulation, safety testing, evaluations, transparency, licensing or standards, with no call to slow, pause or prohibit.
 - Someone else's paraphrase or summary of the speaker's view rather than the speaker's own words.
@@ -123,9 +123,13 @@ async function checkOne(url, quote) {
   // toLowerCase can change length for a few non-ASCII characters; then fall
   // back to searching the lowercased text for both match and window.
   const text = lower.length === page.text.length ? page.text : lower;
+  // Try the quote with its own punctuation first, so a short quote like
+  // "Shut it all down." lands on the sentence rather than a headline.
+  const exact = normalise(quote).replace(/^["']|["']$/g, '');
   const q = matchable(quote);
-  const idx = lower.indexOf(q);
-  if (idx >= 0) return { ok: true, reason: 'exact match', window: windowAround(text, idx, q.length) };
+  const eIdx = lower.indexOf(exact);
+  const idx = eIdx >= 0 ? eIdx : lower.indexOf(q);
+  if (idx >= 0) return { ok: true, reason: 'exact match', window: windowAround(text, idx, eIdx >= 0 ? exact.length : q.length) };
   // Partial: does a long leading chunk match? Helps spot small transcription slips.
   const head = q.slice(0, Math.max(20, Math.floor(q.length * 0.5)));
   const hIdx = lower.indexOf(head);
