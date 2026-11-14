@@ -1,0 +1,15 @@
+person: Elon Musk
+role: CEO, xAI, Tesla and SpaceX
+sector: industry
+country: US
+date: 2025-12-09
+quote: "If I could, I would certainly slow down AI and robotics, but I can't."
+summary: Said on The Katie Miller Podcast (episode 18), separating what he wishes would happen from what he predicts will happen.
+notes: Original is the podcast video (https://www.youtube.com/watch?v=bz5Hjk40FD4, chapter "AI and Robots Replacing Jobs", around 7:56, published 2025-12-09). The quote here is from a third-party transcript, not yet checked against the audio; OfficeChai (previous source) has the same sentence. Borderline - he wants AI slowed but presents it as impossible. conditional set to false; "if I could" is not a condition on his support.
+source_url: https://singjupost.com/elon-musk-on-doge-katie-miller-podcast-ep-18-transcript/
+archive_url: https://web.archive.org/web/20260308130628/https://singjupost.com/elon-musk-on-doge-katie-miller-podcast-ep-18-transcript/
+source_type: podcast
+primary_source: false
+stance: slow
+added: 2026-11-14
+verified: false

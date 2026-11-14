@@ -39,6 +39,7 @@ These are NOT calls, even when the words "pause", "slow" or "stop" appear:
 - Asking that humanity keep the ABILITY to pause (an off-switch, a "pause button", the capacity to stop) without calling for a pause.
 - Hypothetical or descriptive statements: what labs might do in some scenario, or predictions that someone will slow down. Explaining what a pause would achieve counts only if the text shows the speaker arguing for one.
 - Resignation without endorsement: "it can't be slowed", "nobody can stop it". (If they also say they WANT it slowed, that part can count; mark it conditional only if they state a condition.)
+- Saying a stop or pause would be sensible in principle while dismissing calls for one (for example, calling pause petitions pointless or silly).
 - Calls only for regulation, safety testing, evaluations, transparency, licensing or standards, with no call to slow, pause or prohibit.
 - Someone else's paraphrase or summary of the speaker's view rather than the speaker's own words.
 - Endorsing another person's essay or proposal in general terms, unless the endorsement itself backs slowing or pausing.
@@ -55,6 +56,10 @@ export function tidy(s) {
     .replace(/[–—]/g, '-')
     .replace(/…/g, '...')
     .replace(/\s+/g, ' ')
+    // Tags become spaces in htmlToText, so markup ending mid-sentence leaves
+    // "deployment , or". Close those gaps on both page and quote.
+    .replace(/ ([,.;:!?)])/g, '$1')
+    .replace(/\( /g, '(')
     .trim();
 }
 
@@ -101,6 +106,8 @@ export async function fetchPageText(url) {
       signal: AbortSignal.timeout(20000),
     });
     if (!res.ok) return { error: `HTTP ${res.status}` };
+    const type = res.headers.get('content-type') || '';
+    if (type && !/text\/|html|xml|json/i.test(type)) return { error: `not a web page (${type.split(';')[0]})` };
     return { text: tidy(htmlToText(await res.text())) };
   } catch (e) {
     return { error: e.name === 'TimeoutError' ? 'timed out' : e.message };
