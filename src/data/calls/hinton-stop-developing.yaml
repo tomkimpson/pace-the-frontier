@@ -4,10 +4,12 @@ sector: academia
 country: CA
 date: 2023-05-03
 quote: "So, yes, I think stopping developing them would be a rational thing to do, but there's no way it's going to happen."
+summary: On stage at MIT Technology Review's EmTech Digital conference, days after leaving Google.
+notes: Re-sourced 2026-11-14. The old seed quote ("it might be quite sensible to just stop developing these things any further") came via PauseAI and stopped before he says it won't happen and that "it's silly to sign petitions saying, 'please stop now.'" This sentence is from Computerworld's edited Q&A of the session; the original is video only (MIT Technology Review, 2023-05-03). Borderline - he endorses stopping in principle but dismisses calls for it.
 source_url: https://www.computerworld.com/article/3695568/qa-googles-geoffrey-hinton-humanity-just-a-passing-phase-in-the-evolution-of-intelligence.html
 archive_url: https://web.archive.org/web/20230505011840/https://www.computerworld.com/article/3695568/qa-googles-geoffrey-hinton-humanity-just-a-passing-phase-in-the-evolution-of-intelligence.html
-source_type: interview
+source_type: speech
 primary_source: false
 stance: pause
-added: 2026-11-14
+added: 2026-11-12
 verified: false
