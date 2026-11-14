@@ -2,12 +2,13 @@ person: Yoshua Bengio
 role: Turing Award laureate; Université de Montréal, Mila
 sector: academia
 country: CA
-date: 2023-05-01
-quote: "Banning powerful AI systems (say beyond the abilities of GPT-4) that are given autonomy and agency would be a good start."
-notes: Date approximate; quote taken from PauseAI's compilation. Find the original and correct date and URL.
-source_url: https://pauseai.info/quotes
-source_type: article
-primary_source: false
+date: 2023-05-22
+quote: "banning powerful AI systems (say beyond the abilities of GPT-4) that are given autonomy and agency would be a good start."
+summary: Blog essay "How Rogue AIs may Arise", proposing national regulation and international agreements, and calling slowing high-risk AI research "worthwhile".
+notes: Traced from PauseAI's compilation to the original essay (2026-11-14). The sentence opens "For example, banning…". The live page was edited 2025-12-03; the archived copy from May 2023 has the identical sentence.
+source_url: https://yoshuabengio.org/2023/05/22/how-rogue-ais-may-arise/
+archive_url: https://web.archive.org/web/20230523031438/https://yoshuabengio.org/2023/05/22/how-rogue-ais-may-arise/
+source_type: essay
 stance: prohibit
 added: 2026-11-12
 verified: false
