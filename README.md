@@ -33,7 +33,7 @@ Copy any file in `src/data/calls/`, edit it, and open a PR. Rules:
 ## One-time setup
 
 1. **Pages:** Settings → Pages → Source: *GitHub Actions*. (Pages on a private repo needs a paid plan; it's free once public.)
-2. **API key:** Settings → Secrets and variables → Actions → New secret `ANTHROPIC_API_KEY`.
+2. **Claude token:** the agent and checks run Claude through the Claude Code CLI on a Claude subscription (Pro or Max), not an API key. Run `claude setup-token` (it prints a token valid for one year, tied to your subscription), then `gh secret set CLAUDE_CODE_OAUTH_TOKEN` and paste it. Don't also set `ANTHROPIC_API_KEY`: if present, Claude Code bills the API instead. Runs count against your subscription's usage limits.
 3. **Let Actions open PRs:** Settings → Actions → General → Workflow permissions → tick *Allow GitHub Actions to create and approve pull requests*.
 4. Optional: repository variable `AGENT_MODEL` to change the model (default `claude-sonnet-5-5`).
 5. Test the agent: Actions → Weekly agent → Run workflow.
@@ -56,6 +56,6 @@ Rejected proposals are listed, with reasons, in a collapsed section of the PR an
 npm install
 npm run dev                         # http://localhost:4321/pace-the-frontier/
 npm run verify                      # check unverified quotes against their sources
-ANTHROPIC_API_KEY=... npm run propose
-ANTHROPIC_API_KEY=... node scripts/check-relevance.mjs src/data/calls/some-entry.yaml
+npm run propose                     # uses your local `claude` login
+node scripts/check-relevance.mjs src/data/calls/some-entry.yaml
 ```

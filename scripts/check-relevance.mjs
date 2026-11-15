@@ -1,12 +1,13 @@
 // Runs the relevance gate over call entries and writes a markdown report.
 // Usage: node scripts/check-relevance.mjs [--all] [--out report.md] [file.yaml ...]
-// With no files and no --all, checks unverified entries. Needs ANTHROPIC_API_KEY.
+// With no files and no --all, checks unverified entries. Runs Claude via the
+// `claude` CLI (scripts/claude.mjs): your login locally, CLAUDE_CODE_OAUTH_TOKEN in CI.
 // Informational: always exits 0 unless the script itself breaks.
 import { writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parse } from 'yaml';
 import { loadCalls } from './lib.mjs';
-import { gate, makeClient, STATUS_ICON } from './relevance.mjs';
+import { gate, STATUS_ICON } from './relevance.mjs';
 
 const MODEL = process.env.MODEL || 'claude-sonnet-5-5';
 const args = process.argv.slice(2);
@@ -18,10 +19,9 @@ const calls = files.length
   ? await Promise.all(files.map(async (f) => ({ file: f, ...parse(await readFile(f, 'utf8')) })))
   : (await loadCalls()).filter((c) => args.includes('--all') || !c.verified);
 
-const client = makeClient();
 const rows = [];
 for (const c of calls) {
-  const r = await gate(client, MODEL, c);
+  const r = await gate(MODEL, c);
   rows.push({ c, r });
   console.log(`${STATUS_ICON[r.status]} ${c.person} (${path.basename(c.file)}) — ${r.reasons.join(' | ')}`);
 }
