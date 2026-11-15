@@ -98,7 +98,6 @@ export function htmlToText(html) {
     .replace(/&#(\d+);/g, (_, d) => safeChar(Number(d)));
 }
 
-// Fetches a page and returns its visible text, tidied. { text } or { error }.
 // Substack blocks scripted page requests from cloud IPs (403 in CI) but serves
 // the same post through its public JSON API. Returns null if not applicable.
 async function substackFallback(url) {
@@ -118,6 +117,34 @@ async function substackFallback(url) {
   }
 }
 
+// Next.js sites often show long text cut short ("Show more") but ship the full
+// text in self.__next_f.push([1,"..."]) script payloads. Returns the prose
+// strings from those payloads, or '' if there are none.
+export function nextPayloadText(html) {
+  const chunks = [...html.matchAll(/self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)/g)];
+  if (!chunks.length) return '';
+  let blob = '';
+  for (const [, lit] of chunks) {
+    try {
+      blob += JSON.parse(lit);
+    } catch {}
+  }
+  // Keep prose strings, plus name/title/author/role fields so the judge can
+  // see who said what. Matches come out in page order.
+  const prose = [];
+  const re = /"(name|title|author|role)":("(?:[^"\\]|\\.)*")|"(?:[^"\\]|\\.){40,}"/g;
+  for (const m of blob.matchAll(re)) {
+    try {
+      const v = JSON.parse(m[2] ?? m[0]);
+      if (m[1]) prose.push(`${m[1]}: ${v}.`);
+      else if ((v.match(/ /g) || []).length >= 5) prose.push(v);
+    } catch {}
+  }
+  return prose.join(' \n ');
+}
+
+// Fetches a page and returns its visible text, tidied. { text } or { error }.
+// For Next.js pages, full-text payload strings are appended after the visible text.
 export async function fetchPageText(url) {
   try {
     const res = await fetch(url, {
@@ -128,7 +155,9 @@ export async function fetchPageText(url) {
     if (!res.ok) return (await substackFallback(url)) || { error: `HTTP ${res.status}` };
     const type = res.headers.get('content-type') || '';
     if (type && !/text\/|html|xml|json/i.test(type)) return { error: `not a web page (${type.split(';')[0]})` };
-    return { text: tidy(htmlToText(await res.text())) };
+    const html = await res.text();
+    const extra = nextPayloadText(html);
+    return { text: tidy(htmlToText(html) + (extra ? ' ' + htmlToText(extra) : '')) };
   } catch (e) {
     return { error: e.name === 'TimeoutError' ? 'timed out' : e.message };
   }
