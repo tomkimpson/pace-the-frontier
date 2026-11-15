@@ -1,0 +1,15 @@
+person: Ted Lieu
+role: U.S. Representative (D-Calif.)
+sector: government
+country: US
+date: 2026-07-23
+quote: It is imperative that these AI systems have kill switches so we can keep this technology from causing catastrophic harm, and that the federal government has the clear authority and process to shut down rogue AI models.
+summary: Introducing the AI Kill Switch Act with Rep. Nathaniel Moran.
+notes: 'Found in the 2026-11-15 review. Kill switch for deployed systems; the bill also lets the government "order a slow down or shutdown". Scope question: off-switches for deployed models rather than the pace of development.'
+source_url: https://lieu.house.gov/media-center/press-releases/reps-lieu-and-moran-introduce-bill-require-kill-switch-ai-systems-can
+source_type: legislation
+primary_source: true
+stance: ability
+conditional: false
+added: 2026-11-15
+verified: false

@@ -1,0 +1,15 @@
+person: John Kennedy
+role: U.S. Senator (R-La.)
+sector: government
+country: US
+date: 2026-09-16
+quote: All I want to do is say, if you are going to sell one of these AI models that could take on a life of its own, then you have to have a kill switch to reassert human control.
+summary: Senate floor speech seeking unanimous consent for a kill-switch requirement; Sen. Rand Paul objected.
+notes: "Found in the 2026-11-15 review. Congressional Record, under \"Mr. KENNEDY\". Same speech: \"I don't want to stop AI innovation.\" Scope question: off-switch for deployed models."
+source_url: https://www.govinfo.gov/content/pkg/CREC-2026-09-16/html/CREC-2026-09-16-pt1-PgS4747.htm
+source_type: speech
+primary_source: true
+stance: ability
+conditional: false
+added: 2026-11-15
+verified: false
