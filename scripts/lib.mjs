@@ -32,7 +32,7 @@ export function slugify(s) {
 // the seed data; add to it when a new kind of false positive gets through.
 export const INCLUSION_RULES = `An entry qualifies only if ALL of these hold:
 1. The speaker is a named, identifiable person (researcher, executive, politician, official, public figure). Statements by an organisation alone do not count.
-2. In their own words, the speaker calls for, endorses, or says they support pausing, slowing, pacing, a moratorium on, or prohibiting frontier/advanced AI development. Compute or data-centre moratoria aimed at AI count. So do calls to build or keep the ABILITY to pause or slow it: an off-switch, a "pause button", or the technical and governance tools to pace or halt development.
+2. In their own words, the speaker calls for, endorses, or says they support pausing, slowing, pacing, a moratorium on, or prohibiting frontier/advanced AI development. Compute or data-centre moratoria aimed at AI count. So do calls to build or keep the ABILITY to pause or slow that development: a "pause button" for AI progress, the option to coordinate a slowdown, or the technical and governance tools to pace or halt development.
 3. The quote is the sentence in which they make that call, copied verbatim from the source. It is not a nearby hedge, caveat or aside.
 
 Stance: use "ability" when the speaker asks only for the ability to pause or slow, without calling for an actual pause or slowdown. If they also call for the pause or slowdown itself, use that stance instead and quote that sentence.
@@ -41,6 +41,7 @@ These are NOT calls, even when the words "pause", "slow" or "stop" appear:
 - Hypothetical or descriptive statements: what labs might do in some scenario, or predictions that someone will slow down. Explaining what a pause would achieve counts only if the text shows the speaker arguing for one.
 - Resignation without endorsement: "it can't be slowed", "nobody can stop it". (If they also say they WANT it slowed, that part can count; mark it conditional only if they state a condition.)
 - Saying a stop or pause would be sensible in principle while dismissing calls for one (for example, calling pause petitions pointless or silly).
+- Kill switches or shutdown powers for individual deployed systems (shutting down a rogue model) without any call to pause, slow or pace development itself.
 - Calls only for regulation, safety testing, evaluations, transparency, licensing or standards, with no call to slow, pause or prohibit, and none to build the ability to.
 - Someone else's paraphrase or summary of the speaker's view rather than the speaker's own words.
 - Endorsing another person's essay or proposal in general terms, unless the endorsement itself backs slowing or pausing.

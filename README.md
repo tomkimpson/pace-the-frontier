@@ -23,7 +23,7 @@ scripts/verify-quotes.mjs fetches each source and checks the quote is verbatim
 
 Copy any file in `src/data/calls/`, edit it, and open a PR. Rules:
 
-- The speaker must actually call for pausing, slowing or prohibiting frontier AI, or for building the *ability* to (an off-switch, tools to pace development). The full rules, including what doesn't count (hypotheticals, resignation, hedges), are `INCLUSION_RULES` in `scripts/lib.mjs`.
+- The speaker must actually call for pausing, slowing or prohibiting frontier AI, or for building the *ability* to pause or slow development (the option to coordinate a slowdown, tools to pace the frontier). The full rules, including what doesn't count (kill switches for individual deployed systems, hypotheticals, resignation, hedges), are `INCLUSION_RULES` in `scripts/lib.mjs`.
 - `quote` must be verbatim from `source_url`, and be the sentence that makes the call. Our own context goes in `summary` (shown) or `notes` (never shown).
 - `stance`: `pause` | `prohibit` | `moratorium` | `slow` | `ability` (asks only for the ability to pause or slow). Set `conditional: true` for "only if others do".
 - `primary_source: false` if the quote comes via a compilation or news report rather than the original.
