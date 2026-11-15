@@ -1,0 +1,17 @@
+person: Jasjeet Sekhon
+role: Chief Strategy Officer, Google DeepMind
+sector: industry
+country: US
+date: 2026-07-28
+quote: We can capture the benefits of the coming intelligence explosion while managing its risks, but only if we build the tools to pace the frontier of the riskiest capabilities before we need them, so we protect people and keep the social trust that innovation depends on.
+summary: Personal comment as a signatory of the Pacing the Frontier statement.
+notes: Personal comment on the Pacing the Frontier statement (pacingthefrontier.com). Comments are undated; the date is the statement's launch (28 July 2026). Long comments are truncated on the page, but the full text is in the page's Next.js payload, which the checker reads.
+source_url: https://www.pacingthefrontier.com/
+source_type: letter
+primary_source: true
+stance: ability
+conditional: false
+letters:
+  - pacing-the-frontier-2026
+added: 2026-11-15
+verified: false
