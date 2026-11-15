@@ -1,0 +1,15 @@
+person: Bernie Sanders
+role: U.S. Senator (I-Vt.)
+sector: government
+country: US
+date: 2026-11-14
+quote: Democrats must enact a national moratorium on AI data centers, supported by 63% of Americans, pause advanced AI development and ban superintelligence.
+summary: In a Fox News op-ed after the midterms, Sanders listed an AI data-center moratorium, a pause on advanced AI development and a superintelligence ban among the new Democratic majority's priorities.
+notes: "Proposed by weekly agent (claude-sonnet-5-5), confidence: high. Sanders is already on the known list (2025-12-16 post), but this is a new statement on a new date and URL. The Fox page text varies slightly between copies: a syndicated copy reads 'which is now supported by 63%'. Check the quote against the live foxnews.com page. The Fox URL slug appears to have been reused for an earlier version of the headline. Relevance gate: pass. judge: include. Bernie Sanders, a named senator, writes in his own op-ed that Democrats must enact a national moratorium on AI data centers, pause advanced AI development and ban superintelligence. This is a direct, unconditional call to pause and prohibit, and the quote is the exact sentence."
+source_url: https://www.foxnews.com/opinion/sen-bernie-sanders-excuses-democrats-deliver
+source_type: essay
+primary_source: true
+stance: pause
+conditional: false
+added: 2026-11-15
+verified: false
