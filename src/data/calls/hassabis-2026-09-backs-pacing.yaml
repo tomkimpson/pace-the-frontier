@@ -3,12 +3,11 @@ role: CEO, Google DeepMind
 sector: industry
 country: GB
 date: 2026-09-12
-quote: "the details need working through."
-summary: Responded to Amodei's pacing essay on X, backing its direction while saying specifics were unresolved.
-notes: Replace with fuller verbatim text from the post.
+quote: "Dario's essay points towards the right path forward. The details need working through, but the direction is correct for meeting this critical moment."
+summary: Responded on X to Dario Amodei's essay calling for AI capabilities to be paced, backing its direction and pointing to DeepMind's proposal for an industry-wide standards body.
+notes: Quote widened on 2026-11-14 to include the endorsement; the previous quote ("the details need working through.") was only the hedge. conditional set to false; the post states no condition. Support is for Amodei's essay rather than a call in Hassabis's own words, so this is borderline under the inclusion rules.
 source_url: https://x.com/demishassabis/status/2098909516582490602
 source_type: post
 stance: slow
-conditional: true
 added: 2026-11-12
 verified: false

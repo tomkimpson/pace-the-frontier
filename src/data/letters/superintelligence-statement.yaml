@@ -1,10 +1,15 @@
+# Checked 2026-11-14. The page shows no date; FLI's newsletter says released October 22.
+# The page displays the statement's own count (73,678) plus a parallel Ekō petition (72,369);
+# the total is what visitors see. A plain fetch shows a placeholder for the Ekō part.
+# The page shows the ask as a numbered list; the (1)/(2) form is from its preview text.
+# All notables are in the signatory list.
 title: Statement on Superintelligence
 organiser: Future of Life Institute
 date: 2025-10-22
 ask: "We call for a prohibition on the development of superintelligence, not lifted before there is (1) broad scientific consensus that it will be done safely and controllably, and (2) strong public buy-in."
 url: https://superintelligence-statement.org/
-signatories: 134015
-signatories_as_of: 2026-11-12
+signatories: 146047
+signatories_as_of: 2026-11-14
 stance: prohibit
 notable: [Geoffrey Hinton, Yoshua Bengio, Steve Wozniak, Mary Robinson, Stephen Fry, Yuval Noah Harari]
 verified: false

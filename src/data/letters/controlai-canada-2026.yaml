@@ -1,10 +1,15 @@
-title: ControlAI Canada Campaign Statement on Superintelligent AI
+# Checked 2026-11-14. Hinton and Russell are listed as "expert endorsements", not signatories.
+# The page shows no total; 25 named supporters (MPs, former MPs and senators, with the
+# Bloc Québécois MPs signing jointly through Martin Champoux). ControlAI says "over 30".
+# Guilbeault and Wilkinson have since left Parliament (now "Former MP").
+# Date inferred: CBC (2026-06-03) says the campaign "launched Thursday", i.e. 2026-05-28.
+title: ControlAI Canada Campaign Statement
 organiser: ControlAI
 date: 2026-05-28
-ask: "Canada should negotiate an international 'trust but verify' regime to prohibit the development of superintelligent AI."
-url: https://controlai.com/canada-statement/en
-signatories: 16
-signatories_as_of: 2026-05-28
+ask: 'Canada should negotiate an international "trust but verify" regime to prohibit the development of superintelligent AI.'
+url: https://controlai.org/canada-statement/en
+signatories: 25
+signatories_as_of: 2026-11-14
 stance: prohibit
-notable: [Steven Guilbeault, Jonathan Wilkinson, Judy Sgro, Geoffrey Hinton, Stuart Russell]
+notable: [Steven Guilbeault, Jonathan Wilkinson, Judy Sgro]
 verified: false
