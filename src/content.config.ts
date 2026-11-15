@@ -3,7 +3,7 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 // Shared vocabularies — keep in sync with scripts/schema.mjs
-export const STANCES = ['pause', 'prohibit', 'moratorium', 'slow'] as const;
+export const STANCES = ['pause', 'prohibit', 'moratorium', 'slow', 'ability'] as const;
 export const SECTORS = [
   'industry',
   'academia',
