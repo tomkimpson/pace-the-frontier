@@ -98,6 +98,25 @@ export function htmlToText(html) {
 }
 
 // Fetches a page and returns its visible text, tidied. { text } or { error }.
+// Substack blocks scripted page requests from cloud IPs (403 in CI) but serves
+// the same post through its public JSON API. Returns null if not applicable.
+async function substackFallback(url) {
+  const m = /^https:\/\/([a-z0-9-]+)\.substack\.com\/p\/([^/?#]+)/i.exec(url);
+  if (!m) return null;
+  try {
+    const res = await fetch(`https://${m[1]}.substack.com/api/v1/posts/${m[2]}`, {
+      headers: { 'user-agent': 'Mozilla/5.0 (pace-the-frontier quote verifier)' },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return null;
+    const post = await res.json();
+    if (!post.body_html) return null;
+    return { text: tidy(htmlToText(`<h1>${post.title || ''}</h1><p>${post.subtitle || ''}</p>${post.body_html}`)) };
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchPageText(url) {
   try {
     const res = await fetch(url, {
@@ -105,7 +124,7 @@ export async function fetchPageText(url) {
       redirect: 'follow',
       signal: AbortSignal.timeout(20000),
     });
-    if (!res.ok) return { error: `HTTP ${res.status}` };
+    if (!res.ok) return (await substackFallback(url)) || { error: `HTTP ${res.status}` };
     const type = res.headers.get('content-type') || '';
     if (type && !/text\/|html|xml|json/i.test(type)) return { error: `not a web page (${type.split(';')[0]})` };
     return { text: tidy(htmlToText(await res.text())) };
