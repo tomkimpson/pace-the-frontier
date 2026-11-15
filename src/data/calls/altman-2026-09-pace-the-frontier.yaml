@@ -1,0 +1,16 @@
+person: Sam Altman
+role: CEO, OpenAI
+sector: industry
+country: US
+date: 2026-09-12
+quote: I agree with Dario that we need to pace the frontier.
+summary: Posted on X in response to Dario Amodei's essay "We must pace the frontier".
+notes: "Found in the 2026-11-15 review. Follow-up post on 2026-09-14 (https://x.com/sama/status/2099348812305473766): \"When we talk about 'pacing', we do not mean 'stopping'.\" and \"Pacing will be well worth this cost; no amount of American competitive pressure should justify recklessness, or let capabilities get ahead of alignment and monitoring.\" Date inferred from the post ID, which is close to Hassabis's 12 Sep post."
+source_url: https://x.com/sama/status/2098811563415150910
+archive_url: https://web.archive.org/web/20261023151305/https://x.com/sama/status/2098811563415150910
+source_type: post
+primary_source: true
+stance: slow
+conditional: false
+added: 2026-11-15
+verified: false

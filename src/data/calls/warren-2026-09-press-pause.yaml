@@ -1,0 +1,16 @@
+person: Elizabeth Warren
+role: U.S. Senator (D-Mass.)
+sector: government
+country: US
+date: 2026-09-16
+quote: We should immediately press pause on the development of advanced AI while lawmakers and regulators put systems in place to keep people safe.
+summary: Press release calling for a pause in advanced AI development.
+notes: Found in the 2026-11-15 review. warren.senate.gov blocks scripts; the archive copy has the identical sentence.
+source_url: https://www.warren.senate.gov/newsroom/press-releases/senator-warren-calls-for-pause-in-advanced-ai-development
+archive_url: https://web.archive.org/web/20261006164830/https://www.warren.senate.gov/newsroom/press-releases/senator-warren-calls-for-pause-in-advanced-ai-development/
+source_type: post
+primary_source: true
+stance: pause
+conditional: false
+added: 2026-11-15
+verified: false

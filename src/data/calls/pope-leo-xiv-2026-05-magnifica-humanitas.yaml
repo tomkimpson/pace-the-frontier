@@ -1,0 +1,15 @@
+person: Pope Leo XIV
+role: Pope
+sector: faith
+country: VA
+date: 2026-05-25
+quote: What is needed is a more active political involvement that is capable of slowing things down when everything is accelerating, and of protecting the opportunities for communities still to be able to participate and ask questions.
+summary: Encyclical Magnifica Humanitas, paragraph 107, in its discussion of AI.
+notes: Found in the 2026-11-15 review. Encyclical dated 15 May 2026, released 25 May. Covers AI generally rather than frontier development specifically, so this may be borderline.
+source_url: https://www.vatican.va/content/leo-xiv/en/encyclicals/documents/20260515-magnifica-humanitas.html
+source_type: letter
+primary_source: true
+stance: ability
+conditional: false
+added: 2026-11-15
+verified: false

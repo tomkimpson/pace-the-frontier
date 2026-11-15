@@ -1,0 +1,16 @@
+person: Alex Sobel
+role: MP (Labour), Leeds Central and Headingley
+sector: government
+country: GB
+date: 2026-09-08
+quote: My Bill recommends that the Government work with other countries to secure an international agreement prohibiting superintelligence.
+summary: Commons ten-minute rule motion to bring in the Artificial Superintelligence Bill.
+notes: Found in the 2026-11-15 review. Hansard's website returns 403 to scripts and has no Wayback copy, so archive_url is Hansard's official API for the same debate.
+source_url: https://hansard.parliament.uk/Commons/2026-09-08/debates/09804EEA-ECA3-40E5-9E96-984DFCB2B139/ArtificialSuperintelligence
+archive_url: https://hansard-api.parliament.uk/debates/debate/09804EEA-ECA3-40E5-9E96-984DFCB2B139.json
+source_type: speech
+primary_source: true
+stance: prohibit
+conditional: false
+added: 2026-11-15
+verified: false

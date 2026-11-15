@@ -1,0 +1,16 @@
+person: Jakub Pachocki
+role: Chief Scientist, OpenAI
+sector: industry
+country: US
+date: 2026-09-06
+quote: I expect and hope for voluntary slowdowns to become commonplace until shared safety bars are established.
+summary: Essay "An Alien Mind" on the OpenAI website.
+notes: Found in the 2026-11-15 review. Byline "Author Jakub Pachocki". Date from The Rundown's coverage; the page itself was read via Wayback because openai.com returns 403 to scripts. "Until..." sets a duration, not a condition.
+source_url: https://openai.com/index/an-alien-mind/
+archive_url: https://web.archive.org/web/20261113221425/https://openai.com/index/an-alien-mind/
+source_type: essay
+primary_source: true
+stance: slow
+conditional: false
+added: 2026-11-15
+verified: false

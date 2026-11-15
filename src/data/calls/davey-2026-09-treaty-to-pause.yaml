@@ -1,0 +1,15 @@
+person: Ed Davey
+role: Leader of the Liberal Democrats
+sector: government
+country: GB
+date: 2026-09-22
+quote: We need a global treaty to press pause on super-intelligent AI now, before it's too late.
+summary: Speech to the Liberal Democrat autumn conference in Brighton, also calling for an International AI Safety Agency modelled on nuclear oversight.
+notes: Found in the 2026-11-15 review. Quoted directly (in quotation marks) by ITV News; the full speech transcript was not reachable (Lib Dem Voice blocks scripts), so primary_source is false. Next sentence in ITV's report, "We need a new International AI Safety Agency - like we have for nuclear - to stop anyone from developing this technology recklessly." Ian Hogarth (FT, Apr 2023) was considered and left out because only the headline was verifiable.
+source_url: https://www.itv.com/news/2026-09-22/ed-davey-says-lib-dems-will-cut-income-tax-to-tackle-cost-of-living
+source_type: speech
+primary_source: false
+stance: pause
+conditional: false
+added: 2026-11-15
+verified: false

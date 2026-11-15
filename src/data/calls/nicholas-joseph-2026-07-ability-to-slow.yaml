@@ -1,0 +1,17 @@
+person: Nicholas Joseph
+role: Pretraining lead, Anthropic
+sector: industry
+country: US
+date: 2026-07-28
+quote: I’m not sure if or where it tops out, but a rapid acceleration in capabilities might be dangerous for society, so it seems prudent to have the ability to slow down deliberately.
+summary: Personal comment as a signatory of the Pacing the Frontier statement.
+notes: Personal comment on the Pacing the Frontier statement (pacingthefrontier.com). Comments are undated; the date is the statement's launch (28 July 2026). Long comments are truncated on the page, but the full text is in the page's Next.js payload, which the checker reads. He writes "I lead pretraining at Anthropic".
+source_url: https://www.pacingthefrontier.com/
+source_type: letter
+primary_source: true
+stance: ability
+conditional: false
+letters:
+  - pacing-the-frontier-2026
+added: 2026-11-15
+verified: false

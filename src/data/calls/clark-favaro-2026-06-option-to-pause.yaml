@@ -1,0 +1,16 @@
+person: Jack Clark & Marina Favaro
+role: Anthropic co-founder; head of The Anthropic Institute
+sector: industry
+country: US
+date: 2026-06-04
+quote: We believe it would be good for the world to have the option to slow or temporarily pause frontier AI development to enable societal structures and alignment research to keep up with the advance of the technology.
+summary: Anthropic Institute essay on recursive self-improvement, co-authored by Marina Favaro and Jack Clark.
+notes: "Found in the 2026-11-15 review. The page says \"Marina Favaro and Jack Clark co-authored this piece\"; \"We\" is the authors writing for the Institute. The page shows no date; 4-5 June 2026 is from coverage (MacDailyNews, 5 June). Favaro's role is from coverage. Same page, conditional: \"If such systems existed, we expect that we would slow down or temporarily pause, if other developers at or near the frontier also did so in a verifiable manner.\""
+source_url: https://www.anthropic.com/institute/recursive-self-improvement
+archive_url: https://web.archive.org/web/20261114044202/https://www.anthropic.com/institute/recursive-self-improvement
+source_type: essay
+primary_source: true
+stance: ability
+conditional: false
+added: 2026-11-15
+verified: false

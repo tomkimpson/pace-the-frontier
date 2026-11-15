@@ -32,7 +32,7 @@ export function slugify(s) {
 // the seed data; add to it when a new kind of false positive gets through.
 export const INCLUSION_RULES = `An entry qualifies only if ALL of these hold:
 1. The speaker is a named, identifiable person (researcher, executive, politician, official, public figure). Statements by an organisation alone do not count.
-2. In their own words, the speaker calls for, endorses, or says they support pausing, slowing, pacing, a moratorium on, or prohibiting frontier/advanced AI development. Compute or data-centre moratoria aimed at AI count. So do calls to build or keep the ABILITY to pause or slow it: an off-switch, a "pause button", or the technical and governance tools to pace or halt development.
+2. In their own words, the speaker calls for, endorses, or says they support pausing, slowing, pacing, a moratorium on, or prohibiting frontier/advanced AI development. Compute or data-centre moratoria aimed at AI count. So do calls to build or keep the ABILITY to pause or slow that development: a "pause button" for AI progress, the option to coordinate a slowdown, or the technical and governance tools to pace or halt development.
 3. The quote is the sentence in which they make that call, copied verbatim from the source. It is not a nearby hedge, caveat or aside.
 
 Stance: use "ability" when the speaker asks only for the ability to pause or slow, without calling for an actual pause or slowdown. If they also call for the pause or slowdown itself, use that stance instead and quote that sentence.
@@ -41,6 +41,7 @@ These are NOT calls, even when the words "pause", "slow" or "stop" appear:
 - Hypothetical or descriptive statements: what labs might do in some scenario, or predictions that someone will slow down. Explaining what a pause would achieve counts only if the text shows the speaker arguing for one.
 - Resignation without endorsement: "it can't be slowed", "nobody can stop it". (If they also say they WANT it slowed, that part can count; mark it conditional only if they state a condition.)
 - Saying a stop or pause would be sensible in principle while dismissing calls for one (for example, calling pause petitions pointless or silly).
+- Kill switches or shutdown powers for individual deployed systems (shutting down a rogue model) without any call to pause, slow or pace development itself.
 - Calls only for regulation, safety testing, evaluations, transparency, licensing or standards, with no call to slow, pause or prohibit, and none to build the ability to.
 - Someone else's paraphrase or summary of the speaker's view rather than the speaker's own words.
 - Endorsing another person's essay or proposal in general terms, unless the endorsement itself backs slowing or pausing.
@@ -98,7 +99,6 @@ export function htmlToText(html) {
     .replace(/&#(\d+);/g, (_, d) => safeChar(Number(d)));
 }
 
-// Fetches a page and returns its visible text, tidied. { text } or { error }.
 // Substack blocks scripted page requests from cloud IPs (403 in CI) but serves
 // the same post through its public JSON API. Returns null if not applicable.
 async function substackFallback(url) {
@@ -118,6 +118,34 @@ async function substackFallback(url) {
   }
 }
 
+// Next.js sites often show long text cut short ("Show more") but ship the full
+// text in self.__next_f.push([1,"..."]) script payloads. Returns the prose
+// strings from those payloads, or '' if there are none.
+export function nextPayloadText(html) {
+  const chunks = [...html.matchAll(/self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)/g)];
+  if (!chunks.length) return '';
+  let blob = '';
+  for (const [, lit] of chunks) {
+    try {
+      blob += JSON.parse(lit);
+    } catch {}
+  }
+  // Keep prose strings, plus name/title/author/role fields so the judge can
+  // see who said what. Matches come out in page order.
+  const prose = [];
+  const re = /"(name|title|author|role)":("(?:[^"\\]|\\.)*")|"(?:[^"\\]|\\.){40,}"/g;
+  for (const m of blob.matchAll(re)) {
+    try {
+      const v = JSON.parse(m[2] ?? m[0]);
+      if (m[1]) prose.push(`${m[1]}: ${v}.`);
+      else if ((v.match(/ /g) || []).length >= 5) prose.push(v);
+    } catch {}
+  }
+  return prose.join(' \n ');
+}
+
+// Fetches a page and returns its visible text, tidied. { text } or { error }.
+// For Next.js pages, full-text payload strings are appended after the visible text.
 export async function fetchPageText(url) {
   try {
     const res = await fetch(url, {
@@ -128,7 +156,9 @@ export async function fetchPageText(url) {
     if (!res.ok) return (await substackFallback(url)) || { error: `HTTP ${res.status}` };
     const type = res.headers.get('content-type') || '';
     if (type && !/text\/|html|xml|json/i.test(type)) return { error: `not a web page (${type.split(';')[0]})` };
-    return { text: tidy(htmlToText(await res.text())) };
+    const html = await res.text();
+    const extra = nextPayloadText(html);
+    return { text: tidy(htmlToText(html) + (extra ? ' ' + htmlToText(extra) : '')) };
   } catch (e) {
     return { error: e.name === 'TimeoutError' ? 'timed out' : e.message };
   }
