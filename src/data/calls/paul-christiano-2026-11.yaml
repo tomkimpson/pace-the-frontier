@@ -1,0 +1,15 @@
+person: Paul Christiano
+role: OpenAI Foundation board member; founder of the Alignment Research Center; 2026 Hinton Lecturer
+sector: industry
+country: US
+date: 2026-11-11
+quote: My view is now, we should probably slow down immediately until we actually have the infrastructure to slow down later
+summary: At the 2026 Hinton Lectures in Toronto, Christiano said his current view is that AI development should slow immediately, until there are working mechanisms to slow down later.
+notes: "Proposed by weekly agent (claude-sonnet-5-5), confidence: medium. Secondary source (Newsweek). The same line is also reported by Yahoo Canada, with slightly different punctuation. The exact lecture date is uncertain: the lectures started Nov 9, the Newsweek photo caption says Nov 11, and a commentary piece says 'later in the week'. The Singju Post transcript covers lecture 1 and may not contain this line. The word 'probably' is a mild hedge, but he states it as his own view. 'Until we have the infrastructure to slow down later' describes the aim of the slowdown, not a stated condition on his support. Relevance gate: pass. judge: include. Named speaker, in his own words, says 'we should probably slow down immediately' until slowing infrastructure exists, and clarifies this means not training bigger models. It is a direct call to slow frontier AI; 'probably' is a hedge, not a stated condition on support."
+source_url: https://www.newsweek.com/expert-warns-ai-could-create-confusion-to-undermine-governments-12703279
+source_type: speech
+primary_source: false
+stance: slow
+conditional: false
+added: 2026-11-15
+verified: false

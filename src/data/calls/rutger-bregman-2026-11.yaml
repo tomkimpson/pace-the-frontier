@@ -1,0 +1,16 @@
+person: Rutger Bregman
+role: Historian and author, Substack essayist
+sector: media
+country: NL
+date: 2026-11-11
+quote: Then we ban the training of more powerful models.
+summary: In the essay "Yes, you should panic about AI", Bregman sets out a sequence of steps that includes banning the training of more powerful models and ends in a verified worldwide pause agreed with China.
+notes: "Proposed by weekly agent (claude-sonnet-5-5), confidence: medium. The agent's original quote was the list's last step: \"Finally, we make a deal with China to count and track all the chips, and push for a verified, worldwide pause on training ever-more-powerful models.\" Changed on 2026-11-15 to the earlier, stronger step, confirmed verbatim via Substack's post API; stance changed from pause to prohibit. The relevance gate could not run in the agent's run because Substack returned 403 to CI; archive_url added so CI can read it. Publication date from his X post and Substack comments page (Nov 11)."
+source_url: https://rutgerbregman.substack.com/p/yes-you-should-panic-about-ai
+archive_url: https://web.archive.org/web/20261114172812/https://rutgerbregman.substack.com/p/yes-you-should-panic-about-ai
+source_type: essay
+primary_source: true
+stance: prohibit
+conditional: false
+added: 2026-11-15
+verified: false
