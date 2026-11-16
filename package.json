@@ -13,8 +13,5 @@
   "dependencies": {
     "astro": "^7.4.11",
     "yaml": "^2.9.1"
-  },
-  "devDependencies": {
-    "@anthropic-ai/sdk": "^1.8.0"
   }
 }

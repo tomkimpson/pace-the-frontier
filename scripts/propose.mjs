@@ -5,9 +5,12 @@
 // aren't calls to pause/slow/prohibit, are rejected and listed in the summary.
 // A human reviews everything in the resulting pull request.
 //
-// Env: ANTHROPIC_API_KEY (required), MODEL (default claude-sonnet-5-5),
-//      LOOKBACK_DAYS (default 10), MAX_SEARCHES (default 20)
-import Anthropic from '@anthropic-ai/sdk';
+// Claude runs through the `claude` CLI (scripts/claude.mjs): your login
+// locally, CLAUDE_CODE_OAUTH_TOKEN in CI. No API key needed.
+//
+// Env: MODEL (default claude-sonnet-5-5), LOOKBACK_DAYS (default 10),
+//      MAX_TURNS (default 40; each search or fetch uses one)
+import { runClaude } from './claude.mjs';
 import { writeFile, appendFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -17,7 +20,7 @@ import { gate, STATUS_ICON } from './relevance.mjs';
 
 const MODEL = process.env.MODEL || 'claude-sonnet-5-5';
 const LOOKBACK_DAYS = Number(process.env.LOOKBACK_DAYS || 10);
-const MAX_SEARCHES = Number(process.env.MAX_SEARCHES || 20);
+const MAX_TURNS = Number(process.env.MAX_TURNS || 40);
 const today = new Date().toISOString().slice(0, 10);
 const since = new Date(Date.now() - LOOKBACK_DAYS * 864e5).toISOString().slice(0, 10);
 
@@ -30,7 +33,7 @@ ${INCLUSION_RULES}
 
 Sourcing rules:
 - Conditional support counts ("I'd pause if others did") but must be marked conditional.
-- The quote must be copied VERBATIM from a page you actually retrieved. Never paraphrase, tidy, or merge sentences. Prefer the primary source (the essay, post, transcript, official record) over news coverage. If you only have it from a secondary source, set primary_source to false.
+- The quote must be copied VERBATIM from a page you actually retrieved. WebFetch returns a processed view of a page, so when you fetch a source, ask it to return the exact sentence(s) word for word. Never paraphrase, tidy, or merge sentences. Prefer the primary source (the essay, post, transcript, official record) over news coverage. If you only have it from a secondary source, set primary_source to false.
 - Keep quotes short: the single most direct sentence or clause, under 40 words.
 - Skip anything already in the known list.
 - Every proposal is re-checked: our script fetches source_url, rejects the entry if the quote isn't on that page, and a separate reviewer judges the surrounding text against the rules above. Pick a source_url whose page shows the quote as plain text (not only in a video or image), and propose only statements you are confident meet the rules.
@@ -42,55 +45,49 @@ const user = `Find new qualifying calls made between ${since} and ${today}. Sear
 Already recorded (do not repeat):
 ${known}
 
-When finished, output ONLY a JSON array inside <entries></entries> tags (an empty array if nothing qualifies). Each element:
-{
-  "person": string,
-  "role": string (role at the time),
-  "sector": one of ${JSON.stringify(SECTORS)},
-  "country": ISO 3166-1 alpha-2 code,
-  "date": "YYYY-MM-DD" (when they said it),
-  "quote": verbatim string,
-  "summary": one neutral sentence of context in your own words,
-  "source_url": URL where the verbatim quote appears,
-  "source_type": one of ${JSON.stringify(SOURCE_TYPES)},
-  "primary_source": boolean,
-  "stance": one of ${JSON.stringify(STANCES)},
-  "conditional": boolean,
-  "confidence": "high" | "medium" | "low",
-  "reviewer_note": anything the human reviewer should double-check
-}`;
+When finished, return your proposals as the "entries" array in the structured output (an empty array if nothing qualifies). Put anything the human reviewer should double-check in each entry's reviewer_note.`;
 
-const client = new Anthropic();
-const messages = [{ role: 'user', content: user }];
-let response;
-// Server-side tools can pause a long turn; continue until the model finishes.
-for (let i = 0; i < 6; i++) {
-  response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 16000,
-    system,
-    messages,
-    tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: MAX_SEARCHES }],
-  });
-  if (response.stop_reason !== 'pause_turn') break;
-  messages.push({ role: 'assistant', content: response.content });
-}
-
-const text = response.content
-  .filter((b) => b.type === 'text')
-  .map((b) => b.text)
-  .join('\n');
-const match = text.match(/<entries>([\s\S]*?)<\/entries>/);
-if (!match) {
-  console.error('No <entries> block in response. Raw text:\n', text.slice(0, 4000));
-  process.exit(1);
-}
+const ENTRY = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['person', 'role', 'sector', 'country', 'date', 'quote', 'summary', 'source_url', 'source_type', 'primary_source', 'stance', 'conditional', 'confidence', 'reviewer_note'],
+  properties: {
+    person: { type: 'string' },
+    role: { type: 'string', description: 'Role at the time of the statement' },
+    sector: { type: 'string', enum: SECTORS },
+    country: { type: 'string', description: 'ISO 3166-1 alpha-2 code' },
+    date: { type: 'string', description: 'YYYY-MM-DD, when they said it' },
+    quote: { type: 'string', description: 'Verbatim from the source page' },
+    summary: { type: 'string', description: 'One neutral sentence of context in your own words' },
+    source_url: { type: 'string', description: 'URL where the verbatim quote appears' },
+    source_type: { type: 'string', enum: SOURCE_TYPES },
+    primary_source: { type: 'boolean' },
+    stance: { type: 'string', enum: STANCES },
+    conditional: { type: 'boolean' },
+    confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
+    reviewer_note: { type: 'string' },
+  },
+};
+const SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['entries'],
+  properties: { entries: { type: 'array', items: ENTRY } },
+};
 
 let entries;
 try {
-  entries = JSON.parse(match[1].trim());
+  ({ entries } = await runClaude({
+    prompt: user,
+    system,
+    schema: SCHEMA,
+    model: MODEL,
+    tools: ['WebSearch', 'WebFetch'],
+    maxTurns: MAX_TURNS,
+    timeoutMs: 40 * 60e3,
+  }));
 } catch (e) {
-  console.error('Could not parse entries JSON:', e.message);
+  console.error('Agent run failed:', e.message);
   process.exit(1);
 }
 
@@ -116,7 +113,7 @@ for (const e of entries) {
     continue;
   }
 
-  const g = await gate(client, MODEL, e);
+  const g = await gate(MODEL, e);
   if (g.status === 'reject') {
     rejected.push({ e, problems: g.reasons });
     continue;

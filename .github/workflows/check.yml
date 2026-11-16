@@ -18,17 +18,19 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code@2.1.316
       - name: Validate data and build
         run: npm run build
       - name: Quote check (informational)
         run: node scripts/verify-quotes.mjs --out verify-report.md && cat verify-report.md >> "$GITHUB_STEP_SUMMARY"
       - name: Relevance check on changed calls (informational)
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           MODEL: ${{ vars.AGENT_MODEL || 'claude-sonnet-5-5' }}
         run: |
           changed=$(git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- 'src/data/calls/*.yaml')
           if [ -z "$changed" ]; then echo "No call entries changed."; exit 0; fi
-          if [ -z "$ANTHROPIC_API_KEY" ]; then echo "No API key available (fork PR?); skipping." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then echo "No Claude token available (fork PR?); skipping." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
           node scripts/check-relevance.mjs --out relevance-report.md $changed
           cat relevance-report.md >> "$GITHUB_STEP_SUMMARY"

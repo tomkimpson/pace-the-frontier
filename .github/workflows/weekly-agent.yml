@@ -24,11 +24,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code@2.1.316
 
       - name: Ask the agent for new calls
         id: propose
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Subscription token from `claude setup-token`; no API key needed.
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           MODEL: ${{ vars.AGENT_MODEL || 'claude-sonnet-5-5' }}
           LOOKBACK_DAYS: ${{ inputs.lookback_days || '10' }}
         run: node scripts/propose.mjs
