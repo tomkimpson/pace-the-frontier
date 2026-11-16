@@ -1,0 +1,15 @@
+person: Phil Aroneanu
+role: Founder and executive director, Irreplaceable Education Fund (plaintiff in suit seeking a freeze on new AI models)
+sector: civil-society
+country: US
+date: 2026-11-12
+quote: A real freeze must specify what work has to halt, how compliance is verified, and the consequences of breaking the rules,
+summary: Speaking as his nonprofit joined a lawsuit against AI firms seeking a freeze on more capable models, he described what an enforceable freeze requires.
+notes: "Proposed by weekly agent (claude-sonnet-5-5), confidence: medium. Secondary source (Al Jazeera). The quote is framed as what a real freeze needs, so check the surrounding text shows he is arguing for the freeze; his group is a plaintiff seeking one. The quote has a trailing comma and the sentence continues with attribution. Other sentences, such as 'To help enforce this freeze, major computing facilities can be monitored.', also exist in the article. Relevance gate: flag. judge: borderline. Aroneanu leads a plaintiff group seeking a freeze, and he speaks of how to enforce \"this freeze\" and monitor compute. But the quoted sentence only describes what a real freeze must contain, not that he wants one. The explicit demands are attributed to the group or the lawsuit, not to him personally."
+source_url: https://www.aljazeera.com/news/2026/11/12/us-nonprofits-sue-tech-giants-to-halt-ai-development
+source_type: article
+primary_source: false
+stance: pause
+conditional: false
+added: 2026-11-16
+verified: false
