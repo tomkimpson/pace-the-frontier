@@ -40,6 +40,7 @@ const calls = defineCollection({
     source_type: z.enum(SOURCE_TYPES),
     primary_source: z.boolean().default(true), // false if quote is via a secondary compilation
     archive_url: z.string().url().optional(),
+    caveat: z.string().optional(), // short public note on a sourcing weakness, shown on the card (e.g. "third-party transcript")
     stance: z.enum(STANCES),
     conditional: z.boolean().default(false), // e.g. "only if others do too"
     letters: z.array(z.string()).default([]),

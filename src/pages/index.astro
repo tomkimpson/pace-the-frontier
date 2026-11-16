@@ -211,11 +211,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
                 <a href={c.source_url} target="_blank" rel="noopener">
                   {c.source_type} · {fmtDate(c.date)} ↗
                 </a>
-                {!c.verified && (
-                  <span class="unverified" title="Not yet checked against the original source">
-                    unverified
-                  </span>
-                )}
+                <span class="flags">
+                  {c.caveat ? (
+                    <span class="caveat" title="A weakness in how this quote is sourced">
+                      {c.caveat}
+                    </span>
+                  ) : (
+                    !c.primary_source && (
+                      <span class="caveat" title="Quoted from a news report or compilation, not the original statement">
+                        secondary source
+                      </span>
+                    )
+                  )}
+                  {c.verified && (
+                    <span class="reviewed" title="A person has checked this quote against its source">
+                      ✓ reviewed
+                    </span>
+                  )}
+                </span>
               </p>
             </article>
           ))
@@ -235,11 +248,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           (“I would pause if others did”) so you can judge for yourself.
         </p>
         <p>
-          <strong>Updated weekly.</strong> An AI agent searches for new calls each week and proposes
-          them. A person checks every quote against its source before it appears.
+          <strong>Checked, then reviewed.</strong> An AI agent proposes new calls each week. A script
+          confirms every quote word for word on its source page, and a second model checks it is
+          really a call. Cards marked “✓ reviewed” have also been checked by a person; “secondary
+          source” means the quote comes from a news report rather than the original.
         </p>
         <p>
-          <strong>Open to correction.</strong> Spotted an error or a missing voice?
+          <strong>Open to correction.</strong> Spotted an error or a missing voice?{' '}
           <a href="https://github.com/tomkimpson/pace-the-frontier/issues/new">Open an issue</a>.
           Signature totals count signatures, not unique people, since letters overlap.
         </p>
@@ -247,7 +262,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </section>
 
     <footer class="site-foot wrap">
-      <p>Pace the Frontier · data is open on GitHub</p>
+      <p>Pace the Frontier · data is open on <a href="https://github.com/tomkimpson/pace-the-frontier">GitHub</a></p>
     </footer>
 
     <script>
@@ -667,12 +682,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   .tag.soft {
     color: var(--ink-3);
   }
-  .unverified {
+  .flags {
     margin-left: auto;
-    color: var(--accent);
+    display: inline-flex;
+    gap: 6px;
+  }
+  .flags:empty {
+    display: none;
+  }
+  .caveat,
+  .reviewed {
     border: 1px solid currentColor;
     border-radius: 3px;
     padding: 0 5px;
+  }
+  .caveat {
+    color: var(--accent);
+  }
+  .reviewed {
+    color: var(--ink-3);
   }
 
   .method {

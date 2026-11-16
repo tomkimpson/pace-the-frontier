@@ -28,7 +28,8 @@ Copy any file in `src/data/calls/`, edit it, and open a PR. Rules:
 - `stance`: `pause` | `prohibit` | `moratorium` | `slow` | `ability` (asks only for the ability to pause or slow). Set `conditional: true` for "only if others do".
 - `primary_source: false` if the quote comes via a compilation or news report rather than the original.
 - `archive_url`: a Wayback Machine copy. The checks fall back to it when the source blocks automated fetches.
-- Set `verified: true` and `verified_by` once you've personally checked the quote. Unverified entries show a small "unverified" badge.
+- Set `verified: true` and `verified_by` once you've personally checked the quote; the card then shows "✓ reviewed".
+- Cards with `primary_source: false` show "secondary source". `caveat` (optional) replaces that with a specific public note, e.g. "third-party transcript".
 
 ## One-time setup
 

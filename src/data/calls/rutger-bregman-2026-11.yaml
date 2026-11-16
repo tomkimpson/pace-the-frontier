@@ -13,4 +13,5 @@ primary_source: true
 stance: prohibit
 conditional: false
 added: 2026-11-15
-verified: false
+verified: true
+verified_by: tomkimpson
