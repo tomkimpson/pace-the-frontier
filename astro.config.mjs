@@ -1,9 +1,8 @@
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages project site. If you add a custom domain, set `site` to it
-// and remove `base`.
+// Served from the custom domain aipauseledger.org (set in the repo's
+// Settings → Pages). No `base`: the site lives at the domain root.
 export default defineConfig({
-  site: 'https://tomkimpson.github.io',
-  base: '/pace-the-frontier',
+  site: 'https://aipauseledger.org',
   trailingSlash: 'ignore',
 });
