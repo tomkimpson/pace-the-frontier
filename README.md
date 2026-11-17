@@ -55,7 +55,7 @@ Rejected proposals are listed, with reasons, in a collapsed section of the PR an
 
 ```sh
 npm install
-npm run dev                         # http://localhost:4321/pace-the-frontier/
+npm run dev                         # http://localhost:4321/
 npm run verify                      # check unverified quotes against their sources
 npm run propose                     # uses your local `claude` login
 node scripts/check-relevance.mjs src/data/calls/some-entry.yaml
