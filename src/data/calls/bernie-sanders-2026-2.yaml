@@ -1,0 +1,15 @@
+person: Bernie Sanders
+role: U.S. Senator
+sector: government
+country: US
+date: 2026-11-23
+quote: pass a national data center moratorium, pause advanced AI development and ban the development of superintelligence.
+summary: Sanders urged the incoming Democratic majority to enact a data center moratorium, pause advanced AI and ban superintelligence development.
+notes: "Proposed by weekly agent (claude-sonnet-5-5), confidence: medium. Secondary blog repost of Sanders statement; original (X/press release) not located. Quote is the tail of a longer sentence beginning 'The new Democratic majority must stop the greed of the Big Tech oligarchs...'. Sanders is already on the list for other dates; this is a distinct statement. Relevance gate: pass. judge: include. Sanders, a named senator, says in his own words (quoted by the blog) that Congress must pass a national data center moratorium, pause advanced AI development and ban superintelligence development. This is a direct call for a pause and a moratorium. He states no condition."
+source_url: https://www.joemygod.com/2026/11/sanders-pause-advanced-ai-before-its-too-late/
+source_type: post
+primary_source: false
+stance: pause
+conditional: false
+added: 2026-11-24
+verified: false
